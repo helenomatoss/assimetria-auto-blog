@@ -1,0 +1,21 @@
+{
+  "name": "assimetria-blog-backend",
+  "version": "1.0.0",
+  "description": "Backend for Assimetria technical challenge - auto-generated blog",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node src/index.js"
+  },
+  "keywords": [],
+  "author": "Heleno Vitor Matos Leite",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.0",
+    "express": "^4.19.0",
+    "node-cron": "^3.0.3",
+    "sqlite3": "^5.1.6"
+  }
+}
