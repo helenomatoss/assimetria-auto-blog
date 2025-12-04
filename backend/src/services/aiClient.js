@@ -2,55 +2,60 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const HUGGINGFACE_API_KEY = process.env.HUGGINGFACE_API_KEY;
-const HUGGINGFACE_MODEL_ID =
-  process.env.HUGGINGFACE_MODEL_ID || "gpt2";
+const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
+const OPENROUTER_MODEL =
+  process.env.OPENROUTER_MODEL ||
+  "mistralai/mistral-7b-instruct:free";
 const DEFAULT_ARTICLE_TOPIC =
   process.env.DEFAULT_ARTICLE_TOPIC || "technology and software";
 
 /**
- * Calls the HuggingFace Inference API to generate raw text.
+ * Calls the OpenRouter API (OpenAI-compatible chat completions)
+ * to generate text from a prompt.
  */
 async function generateRawTextFromAI(prompt) {
-  if (!HUGGINGFACE_API_KEY) {
-    throw new Error("HUGGINGFACE_API_KEY is not set");
+  if (!OPENROUTER_API_KEY) {
+    throw new Error("OPENROUTER_API_KEY is not set");
   }
 
   const response = await fetch(
-    `https://api-inference.huggingface.co/models/${HUGGINGFACE_MODEL_ID}`,
+    "https://openrouter.ai/api/v1/chat/completions",
     {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${HUGGINGFACE_API_KEY}`,
-        "Content-Type": "application/json"
+        Authorization: `Bearer ${OPENROUTER_API_KEY}`,
+        "Content-Type": "application/json",
+        // Optional but recommended headers:
+        "HTTP-Referer": "https://github.com/helenomatoss/assimetria-auto-blog",
+        "X-Title": "Assimetria Auto Blog"
       },
       body: JSON.stringify({
-        inputs: prompt,
-        parameters: {
-          max_new_tokens: 300,
-          temperature: 0.7,
-          do_sample: true
-        }
+        model: OPENROUTER_MODEL,
+        messages: [
+          {
+            role: "user",
+            content: prompt
+          }
+        ],
+        max_tokens: 500,
+        temperature: 0.7
       })
     }
   );
 
   if (!response.ok) {
     const errorText = await response.text();
-    console.error("HuggingFace API error:", errorText);
+    console.error("OpenRouter API error:", errorText);
     throw new Error(
-      `HuggingFace API request failed with status ${response.status}`
+      `OpenRouter API request failed with status ${response.status}`
     );
   }
 
   const data = await response.json();
 
-  // Different models can have slightly different response shapes,
-  // but most text-generation models return an array with "generated_text".
+  // OpenAI-style response shape
   const rawText =
-    Array.isArray(data) && data[0]?.generated_text
-      ? data[0].generated_text
-      : JSON.stringify(data);
+    data.choices?.[0]?.message?.content || JSON.stringify(data);
 
   return rawText;
 }

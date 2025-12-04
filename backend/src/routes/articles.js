@@ -3,6 +3,8 @@ import {
   getAllArticles,
   getArticleById
 } from "../models/articleModel.js";
+import { generateAndSaveArticle } from "../services/articleJob.js";
+
 
 const router = Router();
 
@@ -37,5 +39,18 @@ router.get("/:id", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch article" });
   }
 });
+
+// POST /articles/generate - manually trigger AI article generation
+router.post("/generate", async (req, res) => {
+  try {
+    const { topic } = req.body || {};
+    const article = await generateAndSaveArticle(topic);
+    res.status(201).json(article);
+  } catch (err) {
+    console.error("Error generating article manually:", err);
+    res.status(500).json({ error: "Failed to generate article" });
+  }
+});
+
 
 export default router;
