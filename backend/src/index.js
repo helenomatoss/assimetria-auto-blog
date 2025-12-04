@@ -3,6 +3,10 @@ import cors from "cors";
 import dotenv from "dotenv";
 import articlesRouter from "./routes/articles.js";
 import { initializeDatabase } from "./models/articleModel.js";
+import {
+  ensureMinimumArticles,
+  startArticleJob
+} from "./services/articleJob.js";
 
 dotenv.config();
 
@@ -20,15 +24,23 @@ app.get("/", (req, res) => {
   res.json({ message: "Assimetria Blog API is running" });
 });
 
-// Initialize database first, then start the server
-initializeDatabase()
-  .then(() => {
+// Initialize database and jobs first, then start server
+async function bootstrap() {
+  try {
+    await initializeDatabase();
+    await ensureMinimumArticles(3);
+    startArticleJob();
+
     app.listen(PORT, () => {
       console.log("✅ Database initialized");
+      console.log("✅ Minimum articles ensured");
+      console.log("✅ Daily cron job started");
       console.log(`✅ Backend listening on port ${PORT}`);
     });
-  })
-  .catch((err) => {
-    console.error("❌ Failed to initialize database", err);
+  } catch (err) {
+    console.error("❌ Failed to bootstrap application", err);
     process.exit(1);
-  });
+  }
+}
+
+bootstrap();
