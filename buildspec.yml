@@ -12,7 +12,7 @@ phases:
       - echo Build started on `date`
       - echo Building Docker images...
       - docker build -t assimetria-auto-blog-backend ./backend
-      - docker build \ -t $FRONTEND_IMAGE \ --build-arg VITE_API_BASE_URL=http://34.242.232.32:4000 \ ./frontend
+      - docker build -t $FRONTEND_IMAGE --build-arg VITE_API_BASE_URL=http://34.242.232.32:4000 ./frontend
 
   post_build:
     commands:
