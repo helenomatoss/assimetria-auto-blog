@@ -12,10 +12,8 @@ RUN npm install
 COPY . .
 
 # Build the React app
-# VITE_API_BASE_URL will be passed as a build argument
-ARG VITE_API_BASE_URL=http://localhost:4000
-ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
-
+ARG VITE_API_BASE_URL
+ENV VITE_API_BASE_URL=${VITE_API_BASE_URL}
 RUN npm run build
 
 # ---------- Runtime stage ----------
