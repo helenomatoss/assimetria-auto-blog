@@ -1,5 +1,10 @@
 version: 0.2
 
+env:
+  variables:
+    BACKEND_IMAGE: assimetria-auto-blog-backend
+    FRONTEND_IMAGE: assimetria-auto-blog-frontend
+
 phases:
   pre_build:
     commands:
@@ -11,15 +16,15 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Building Docker images...
-      - docker build -t assimetria-auto-blog-backend ./backend
+      - docker build -t $BACKEND_IMAGE ./backend
       - docker build -t $FRONTEND_IMAGE --build-arg VITE_API_BASE_URL=http://34.242.232.32:4000 ./frontend
 
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Tagging images...
-      - docker tag assimetria-auto-blog-backend:latest 290698220791.dkr.ecr.eu-west-1.amazonaws.com/assimetria-auto-blog-backend:latest
-      - docker tag assimetria-auto-blog-frontend:latest 290698220791.dkr.ecr.eu-west-1.amazonaws.com/assimetria-auto-blog-frontend:latest
+      - docker tag $BACKEND_IMAGE:latest  290698220791.dkr.ecr.eu-west-1.amazonaws.com/assimetria-auto-blog-backend:latest
+      - docker tag $FRONTEND_IMAGE:latest 290698220791.dkr.ecr.eu-west-1.amazonaws.com/assimetria-auto-blog-frontend:latest
       - echo Pushing images to ECR...
       - docker push 290698220791.dkr.ecr.eu-west-1.amazonaws.com/assimetria-auto-blog-backend:latest
       - docker push 290698220791.dkr.ecr.eu-west-1.amazonaws.com/assimetria-auto-blog-frontend:latest
