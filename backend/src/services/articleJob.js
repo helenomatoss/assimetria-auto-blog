@@ -60,8 +60,8 @@ export async function ensureMinimumArticles(minCount = 3) {
 export function startArticleJob() {
   console.log("⏰ Starting daily article generation job...");
 
-  // Runs every day at 03:00 (server local time)
-  cron.schedule("*/1 * * * *", async () => {
+  // Run every minute (for testing)
+  cron.schedule("* * * * *", async () => {
     console.log("⏰ Cron triggered: generating daily article...");
     try {
       await generateAndSaveArticle();
