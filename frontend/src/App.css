@@ -1,42 +1,201 @@
-#root {
-  max-width: 1280px;
+:root {
+  color-scheme: dark;
+  --bg: #050816;
+  --bg-elevated: #0b1020;
+  --border-subtle: #20263a;
+  --accent: #6366f1;
+  --accent-soft: rgba(99, 102, 241, 0.12);
+  --text-main: #f9fafb;
+  --text-muted: #9ca3af;
+  --danger: #f97373;
+  --radius-lg: 18px;
+  --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.6);
+  --container-width: 960px;
+  --transition-fast: 0.18s ease-out;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "Segoe UI", sans-serif;
+  background: radial-gradient(circle at top, #111827 0, #020617 40%, #000 100%);
+  color: var(--text-main);
+}
+
+/* Layout geral */
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-header {
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+  backdrop-filter: blur(16px);
+  background: linear-gradient(
+      to bottom,
+      rgba(15, 23, 42, 0.9),
+      rgba(15, 23, 42, 0.7)
+    );
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.page-header-inner {
+  max-width: var(--container-width);
   margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.page-header h1 {
+  font-size: 1.6rem;
+  letter-spacing: 0.04em;
+  margin: 0;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+.page-header p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+/* Conteúdo */
+
+.page-content {
+  flex: 1;
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 24px 20px 40px;
+}
+
+/* Status messages */
+
+.status {
+  margin-top: 32px;
+  font-size: 0.95rem;
+}
+
+.status-loading {
+  color: var(--text-muted);
+}
+
+.status-error {
+  color: var(--danger);
+}
+
+/* Lista de artigos */
+
+.articles-grid {
+  margin-top: 12px;
+  display: grid;
+  gap: 16px;
+}
+
+.article-card {
+  display: block;
+  padding: 18px 18px 16px;
+  border-radius: var(--radius-lg);
+  background: radial-gradient(circle at top left, #111827 0, #020617 55%);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-soft);
+  text-decoration: none;
+  color: inherit;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast),
+    border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.article-card:hover {
+  transform: translateY(-3px) translateZ(0);
+  box-shadow: 0 20px 55px rgba(15, 23, 42, 0.9);
+  border-color: var(--accent);
+  background: radial-gradient(circle at top left, #1d2238 0, #020617 60%);
+}
+
+.article-card h2 {
+  margin: 0 0 6px;
+  font-size: 1.1rem;
+}
+
+.article-meta {
+  margin: 0 0 10px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.article-excerpt {
+  margin: 0 0 10px;
+  font-size: 0.92rem;
+  color: #e5e7eb;
+}
+
+.article-link {
+  font-size: 0.85rem;
+  color: var(--accent);
+}
+
+/* Página de detalhe */
+
+.article-detail {
+  max-width: 760px;
+  margin: 8px auto 0;
+  padding: 24px 22px 26px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+  background: radial-gradient(circle at top left, #111827 0, #020617 60%);
+  box-shadow: var(--shadow-soft);
+}
+
+.article-detail h1 {
+  margin: 0 0 8px;
+  font-size: 1.6rem;
+}
+
+.article-detail .article-meta {
+  margin-bottom: 18px;
+}
+
+.article-body p {
+  margin: 0 0 12px;
+  line-height: 1.6;
+  font-size: 0.98rem;
+  color: #e5e7eb;
+}
+
+/* Back link */
+
+.back-link {
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+/* Responsivo */
+
+@media (max-width: 640px) {
+  .page-header-inner {
+    padding-inline: 16px;
   }
-  to {
-    transform: rotate(360deg);
+
+  .page-content {
+    padding-inline: 16px;
   }
-}
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+  .article-detail {
+    padding-inline: 18px;
   }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
 }

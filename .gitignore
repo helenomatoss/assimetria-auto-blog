@@ -22,3 +22,6 @@ yarn-error.log*
 # Build outputs
 dist/
 build/
+backend/.env
+backend/.env.local
+.env.local

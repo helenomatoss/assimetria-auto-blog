@@ -1,9 +1,17 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { fetchArticleById } from "../api/client";
-import type { Article } from "../api/client";
+import { type Article, fetchArticleById } from "../api/client";
 
-export function ArticleDetailPage() {
+function formatDate(iso: string) {
+  const d = new Date(iso);
+  return d.toLocaleDateString("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+}
+
+function ArticleDetailPage() {
   const { id } = useParams<{ id: string }>();
   const [article, setArticle] = useState<Article | null>(null);
   const [loading, setLoading] = useState(true);
@@ -11,7 +19,6 @@ export function ArticleDetailPage() {
 
   useEffect(() => {
     if (!id) return;
-
     async function load() {
       try {
         const data = await fetchArticleById(Number(id));
@@ -23,42 +30,42 @@ export function ArticleDetailPage() {
         setLoading(false);
       }
     }
-
     load();
   }, [id]);
 
-  if (loading) {
-    return <p>Loading article...</p>;
-  }
-
-  if (error) {
-    return (
-      <div style={{ maxWidth: 800, margin: "2rem auto", padding: "0 1rem" }}>
-        <p style={{ color: "red" }}>{error}</p>
-        <Link to="/">← Back to articles</Link>
-      </div>
-    );
-  }
-
-  if (!article) {
-    return (
-      <div style={{ maxWidth: 800, margin: "2rem auto", padding: "0 1rem" }}>
-        <p>Article not found.</p>
-        <Link to="/">← Back to articles</Link>
-      </div>
-    );
-  }
-
   return (
-    <div style={{ maxWidth: 800, margin: "2rem auto", padding: "0 1rem" }}>
-      <Link to="/">← Back to articles</Link>
-      <h1 style={{ marginTop: "1rem" }}>{article.title}</h1>
-      <p style={{ fontSize: "0.8rem", opacity: 0.7 }}>
-        {new Date(article.createdAt).toLocaleString()}
-      </p>
-      <div style={{ marginTop: "1rem", whiteSpace: "pre-line" }}>
-        {article.content}
-      </div>
+    <div className="article-layout">
+      <Link to="/articles" className="back-link">
+        ← Back to all articles
+      </Link>
+
+      {loading && <p className="state-message">Loading article…</p>}
+      {error && <p className="state-message error">{error}</p>}
+
+      {article && !loading && !error && (
+        <>
+          <header className="article-detail-header">
+            <p className="page-kicker">Article</p>
+            <h1 className="article-detail-title">{article.title}</h1>
+            <div className="article-detail-meta">
+              <span>{formatDate(article.createdAt)}</span>
+              <span className="article-detail-meta-badge">
+                Generated automatically
+              </span>
+            </div>
+          </header>
+
+          <div className="article-detail-body">
+            {article.content.split("\n\n").map((block, idx) => (
+              <p key={idx} style={{ marginBottom: "0.9em" }}>
+                {block}
+              </p>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }
+
+export default ArticleDetailPage;
