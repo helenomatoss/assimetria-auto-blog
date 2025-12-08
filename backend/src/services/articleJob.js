@@ -61,7 +61,7 @@ export function startArticleJob() {
   console.log("⏰ Starting daily article generation job...");
 
   // Run every minute (for testing)
-  cron.schedule("* * * * *", async () => {
+  cron.schedule('0 9 * * *', async () => {
     console.log("⏰ Cron triggered: generating daily article...");
     try {
       await generateAndSaveArticle();
