@@ -3,15 +3,10 @@ import { Link, useParams } from "react-router-dom";
 import { type Article, fetchArticleById } from "../api/client";
 
 function formatDate(iso: string) {
-  const d = new Date(iso);
-  return d.toLocaleDateString("pt-BR", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
+  return new Date(iso).toLocaleDateString("en-GB");
 }
 
-function ArticleDetailPage() {
+export default function ArticleDetailPage() {
   const { id } = useParams<{ id: string }>();
   const [article, setArticle] = useState<Article | null>(null);
   const [loading, setLoading] = useState(true);
@@ -19,9 +14,11 @@ function ArticleDetailPage() {
 
   useEffect(() => {
     if (!id) return;
-    async function load() {
+
+    (async () => {
       try {
-        const data = await fetchArticleById(Number(id));
+        setLoading(true);
+        const data = await fetchArticleById(id);
         setArticle(data);
       } catch (err) {
         console.error(err);
@@ -29,43 +26,46 @@ function ArticleDetailPage() {
       } finally {
         setLoading(false);
       }
-    }
-    load();
+    })();
   }, [id]);
 
+  if (loading) {
+    return (
+      <main className="max-w-3xl mx-auto py-16 text-slate-300">
+        Loading article...
+      </main>
+    );
+  }
+
+  if (error || !article) {
+    return (
+      <main className="max-w-3xl mx-auto py-16 text-red-400">
+        {error ?? "Article not found."}
+      </main>
+    );
+  }
+
   return (
-    <div className="article-layout">
-      <Link to="/articles" className="back-link">
+    <main className="max-w-3xl mx-auto py-12 space-y-6">
+      <Link
+        to="/"
+        className="inline-flex text-xs text-sky-300 hover:text-sky-200"
+      >
         ← Back to all articles
       </Link>
 
-      {loading && <p className="state-message">Loading article…</p>}
-      {error && <p className="state-message error">{error}</p>}
+      <header className="space-y-3">
+        <p className="text-xs text-slate-400">
+          {formatDate(article.createdAt)} • ~3–5 min read
+        </p>
+        <h1 className="text-3xl font-semibold text-slate-50">
+          {article.title}
+        </h1>
+      </header>
 
-      {article && !loading && !error && (
-        <>
-          <header className="article-detail-header">
-            <p className="page-kicker">Article</p>
-            <h1 className="article-detail-title">{article.title}</h1>
-            <div className="article-detail-meta">
-              <span>{formatDate(article.createdAt)}</span>
-              <span className="article-detail-meta-badge">
-                Generated automatically
-              </span>
-            </div>
-          </header>
-
-          <div className="article-detail-body">
-            {article.content.split("\n\n").map((block, idx) => (
-              <p key={idx} style={{ marginBottom: "0.9em" }}>
-                {block}
-              </p>
-            ))}
-          </div>
-        </>
-      )}
-    </div>
+      <article className="text-slate-100 whitespace-pre-line text-sm leading-relaxed">
+        {article.content}
+      </article>
+    </main>
   );
 }
-
-export default ArticleDetailPage;
