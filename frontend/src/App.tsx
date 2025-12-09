@@ -1,37 +1,42 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+// frontend/src/App.tsx
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ArticlesListPage from "./pages/ArticlesListPage";
 import ArticleDetailPage from "./pages/ArticleDetailPage";
 
 function App() {
   return (
-    <BrowserRouter>
-      <div className="app-shell">
-        <header className="app-header">
-          <div className="app-header-inner">
-            <div>
-              <div className="app-title">
-                <span className="app-title-gradient">Assimetria</span>
-                <span className="app-title-pill">Auto-generated blog</span>
+    <div className="app-shell">
+      <header className="app-shell__header">
+        <div className="app-shell__header-inner">
+          <div className="brand">
+            <div className="brand__logo" />
+            <div className="brand__text">
+              <div className="brand__name">Assimetria</div>
+              <div className="brand__badge">
+                <span className="brand__badge-dot" />
+                Auto-generated blog
               </div>
-              <p className="app-subtitle">
-                Daily AI-generated tech articles — React, Node, Docker & AWS.
-              </p>
             </div>
           </div>
-        </header>
 
-        <main className="app-main">
-          <Routes>
-            <Route path="/" element={<ArticlesListPage />} />
-            <Route path="/articles/:id" element={<ArticleDetailPage />} />
-          </Routes>
-        </main>
+          <div className="app-shell__header-meta">
+            <div>Daily AI-generated tech articles</div>
+            <div>React · Node · Docker · AWS</div>
+          </div>
+        </div>
+      </header>
 
-        <footer className="app-footer">
-          Powered by AI · React · Node.js · Docker · AWS
-        </footer>
-      </div>
-    </BrowserRouter>
+      <main className="app-shell__main">
+        <div className="app-shell__main-inner">
+          <Router>
+            <Routes>
+              <Route path="/" element={<ArticlesListPage />} />
+              <Route path="/articles/:id" element={<ArticleDetailPage />} />
+            </Routes>
+          </Router>
+        </div>
+      </main>
+    </div>
   );
 }
 
