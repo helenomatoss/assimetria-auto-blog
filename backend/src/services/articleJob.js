@@ -53,20 +53,16 @@ export async function ensureMinimumArticles(minCount = 3) {
   console.log("✅ Minimum number of articles ensured.");
 }
 
-/**
- * Starts a cron job that generates 1 new article per day.
- * Example schedule: every day at 03:00 server time.
- */
+
 export function startArticleJob() {
   console.log("⏰ Starting daily article generation job...");
 
-  // Run every minute (for testing)
-  cron.schedule('0 9 * * *', async () => {
-    console.log("⏰ Cron triggered: generating daily article...");
-    try {
-      await generateAndSaveArticle();
-    } catch (err) {
-      console.error("❌ Error in scheduled article generation:", err);
-    }
-  });
+cron.schedule("0 3 * * *", async () => {
+  console.log("🕒 Cron triggered: generating daily article...");
+  try {
+    await generateAndSaveArticle();
+  } catch (err) {
+    console.error("❌ Error in scheduled article generation:", err);
+  }
+});
 }
